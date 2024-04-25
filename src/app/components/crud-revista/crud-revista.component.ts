@@ -5,7 +5,7 @@ import { MenuComponent } from '../../menu/menu.component'
 import { AppMaterialModule } from '../../app.material.module';
 import { MatDialog } from '@angular/material/dialog';
 import { CrudRevistaAddComponent } from '../crud-revista-add/crud-revista-add.component';
-import { RevistaService } from '../../services/revisa.service';
+import { RevistaService } from '../../services/revista.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Revista } from '../../models/revista.model';

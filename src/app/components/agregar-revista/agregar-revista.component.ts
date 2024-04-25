@@ -9,7 +9,7 @@ import { UtilService } from '../../services/util.service';
 import { Revista } from '../../models/revista.model';
 import { TokenService } from '../../security/token.service';
 import { Usuario } from '../../models/usuario.model';
-import { RevistaService } from '../../services/revisa.service';
+import { RevistaService } from '../../services/revista.service';
 
 import Swal from 'sweetalert2'
 

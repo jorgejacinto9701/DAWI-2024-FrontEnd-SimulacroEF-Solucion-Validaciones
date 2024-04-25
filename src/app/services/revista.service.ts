@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AppSettings } from '../app.settings';
@@ -7,6 +7,7 @@ import { Revista } from '../models/revista.model';
 
 const baseUrlRevista = AppSettings.API_ENDPOINT+ '/revista';
 const baseUrlCrudRevista = AppSettings.API_ENDPOINT+ '/crudRevista';
+const baseUrlConsultaRevista = AppSettings.API_ENDPOINT+ '/consultaRevista';
 
 @Injectable({
   providedIn: 'root'
@@ -34,4 +35,18 @@ export class RevistaService {
     return this.http.get(baseUrlCrudRevista+"/listaRevistaPorNombreLike/"+ filtro);
   }
 
+  //PC3 - CONSULTA
+
+  consultarRevistaComplejo(nom:string, fre:string, desde:string, hasta:string, est:number, p:number, t:number):Observable<any>{
+    const params = new HttpParams()
+    .set("nombre", nom)
+    .set("frecuencia", fre)
+    .set("fecDesde", desde)
+    .set("fecHasta", hasta)
+    .set("estado", est)
+    .set("idPais", p)
+    .set("idTipo", t);
+
+    return this.http.get(baseUrlConsultaRevista+"/consultaRevistaPorParametros", {params});
+  }
 }
