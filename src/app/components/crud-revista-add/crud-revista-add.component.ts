@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppMaterialModule } from '../../app.material.module';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../../menu/menu.component';
 import { Pais } from '../../models/pais.model';
@@ -16,12 +16,21 @@ import Swal from 'sweetalert2';
 @Component({
   standalone: true,
   selector: 'app-crud-revista-add',
-  imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent],
+  imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent, ReactiveFormsModule],
   templateUrl: './crud-revista-add.component.html',
   styleUrls: ['./crud-revista-add.component.css'],
 })
 export class CrudRevistaAddComponent {
 
+
+  formsRegistra = this.formBuilder.group({ 
+    validaNombre: ['', [Validators.required, Validators.pattern('[a-zA-Zá-úÁ-ÚñÑ ]{3,30}')]] , 
+    validaFrecuencia: ['', [Validators.required, Validators.pattern('[a-zA-Zá-úÁ-ÚñÑ ]{3,30}')] ] , 
+    validaFechaCreacion: ['', [Validators.required]] , 
+    validaTelefono: ['', [Validators.required, Validators.pattern('[9][0-9]{8}')]] , 
+    validaPais: ['', Validators.min(1)] , 
+    validaTipoRevista: ['', Validators.min(1)] ,  
+});
   
   lstPais: Pais[] = [];
   lstTipo: DataCatalogo[] = [];
@@ -29,7 +38,7 @@ export class CrudRevistaAddComponent {
   objRevista: Revista ={
         nombre: "",
         frecuencia: "",
-        fechaCreacion : new Date(),
+        fechaCreacion : undefined,
         telefono: "",
         pais:{
           idPais:-1
@@ -42,7 +51,8 @@ export class CrudRevistaAddComponent {
 
   constructor(private utilService: UtilService, 
               private tokenService: TokenService,
-              private revistaService: RevistaService ){
+              private revistaService: RevistaService,
+              private formBuilder : FormBuilder ){
           this.utilService.listaTipoLibroRevista().subscribe(
                 x =>  this.lstTipo = x
           );
@@ -52,6 +62,7 @@ export class CrudRevistaAddComponent {
           this.objUsuario.idUsuario = tokenService.getUserId();
   }
   registra(){
+    if (this.formsRegistra.valid){
         this.objRevista.usuarioActualiza = this.objUsuario;
         this.objRevista.usuarioRegistro = this.objUsuario;
         this.revistaService.registrarCrud(this.objRevista).subscribe(
@@ -63,5 +74,6 @@ export class CrudRevistaAddComponent {
             })
           },
         );
+      }
   }
 }

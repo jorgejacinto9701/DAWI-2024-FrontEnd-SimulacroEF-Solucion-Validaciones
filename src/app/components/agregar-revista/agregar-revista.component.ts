@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppMaterialModule } from '../../app.material.module';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../../menu/menu.component';
 import { Pais } from '../../models/pais.model';
@@ -15,7 +15,7 @@ import Swal from 'sweetalert2'
 
 @Component({
   standalone: true,
-  imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent],
+  imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent, ReactiveFormsModule],
   selector: 'app-agregar-revista',
   templateUrl: './agregar-revista.component.html',
   styleUrls: ['./agregar-revista.component.css']
@@ -25,10 +25,21 @@ export class AgregarRevistaComponent {
       lstPais: Pais[] = [];
       lstTipo: DataCatalogo[] = [];
 
+
+        //declaracion de las validaciones
+      formsRegistra = this.formBuilder.group({ 
+        validaNombre: ['', [Validators.required, Validators.pattern('[a-zA-Zá-úÁ-ÚñÑ ]{3,30}')]] , 
+        validaFrecuencia: ['', [Validators.required, Validators.pattern('[a-zA-Zá-úÁ-ÚñÑ ]{3,30}')] ] , 
+        validaFechaCreacion: ['', [Validators.required]] , 
+        validaTelefono: ['', [Validators.required, Validators.pattern('[9][0-9]{8}')]] , 
+        validaPais: ['', Validators.min(1)] , 
+        validaTipoRevista: ['', Validators.min(1)] ,  
+    });
+
       objRevista: Revista ={
             nombre: "",
             frecuencia: "",
-            fechaCreacion : new Date(),
+            fechaCreacion : undefined,
             telefono: "",
             pais:{
               idPais:-1
@@ -41,7 +52,8 @@ export class AgregarRevistaComponent {
 
       constructor(private utilService: UtilService, 
                   private tokenService: TokenService,
-                  private revistaService: RevistaService){
+                  private revistaService: RevistaService,
+                  private formBuilder : FormBuilder){
               this.utilService.listaTipoLibroRevista().subscribe(
                     x =>  this.lstTipo = x
               );
@@ -51,16 +63,33 @@ export class AgregarRevistaComponent {
               this.objUsuario.idUsuario = tokenService.getUserId();
       }
       registra(){
-            this.objRevista.usuarioActualiza = this.objUsuario;
-            this.objRevista.usuarioRegistro = this.objUsuario;
-            this.revistaService.registrar(this.objRevista).subscribe(
-              x=>{
-                Swal.fire({
-                  icon: 'info',
-                  title: 'Resultado del Registro',
-                  text: x.mensaje,
-                })
-              },
-            );
+        if (this.formsRegistra.valid){
+              this.objRevista.usuarioActualiza = this.objUsuario;
+              this.objRevista.usuarioRegistro = this.objUsuario;
+              this.revistaService.registrar(this.objRevista).subscribe(
+                x=>{
+                  Swal.fire({
+                    icon: 'info',
+                    title: 'Resultado del Registro',
+                    text: x.mensaje,
+                  })
+
+                  this.objRevista = {
+                        nombre: "",
+                        frecuencia: "",
+                        fechaCreacion : undefined,
+                        telefono: "",
+                        pais:{
+                          idPais:-1
+                        },
+                        tipoRevista:{
+                            idDataCatalogo:-1
+                        }
+                  }
+
+                  
+                },
+              );
+          }
       }
 }
