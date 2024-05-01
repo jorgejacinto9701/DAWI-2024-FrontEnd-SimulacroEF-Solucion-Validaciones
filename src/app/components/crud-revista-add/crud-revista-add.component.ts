@@ -71,7 +71,15 @@ export class CrudRevistaAddComponent {
               icon: 'info',
               title: 'Resultado del Registro',
               text: x.mensaje,
-            })
+            });
+
+             //limpia el formulario
+             this.formsRegistra.reset();
+                    
+             //borra los errores
+             Object.keys(this.formsRegistra.controls).forEach(x => {
+                   this.formsRegistra.get(x)?.setErrors(null);
+             });
           },
         );
       }
