@@ -72,20 +72,15 @@ export class AgregarRevistaComponent {
                     icon: 'info',
                     title: 'Resultado del Registro',
                     text: x.mensaje,
-                  })
+                  });
 
-                  this.objRevista = {
-                        nombre: "",
-                        frecuencia: "",
-                        fechaCreacion : undefined,
-                        telefono: "",
-                        pais:{
-                          idPais:-1
-                        },
-                        tipoRevista:{
-                            idDataCatalogo:-1
-                        }
-                  }
+                   //limpia el formulario
+                    this.formsRegistra.reset();
+                    
+                    //borra los errores
+                    Object.keys(this.formsRegistra.controls).forEach(x => {
+                        this.formsRegistra.get(x)?.setErrors(null);
+                    });
 
                   
                 },
